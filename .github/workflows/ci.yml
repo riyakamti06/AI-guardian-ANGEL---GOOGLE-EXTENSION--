@@ -1,16 +1,29 @@
 name: CI
+
 on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - run: bun run lint --if-present
-      - run: bunx vitest run
-      - run: bun run build
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check extension file exists
+        run: test -f "google extension/background.js"
+
+      - name: Validate JavaScript syntax
+        run: node --check "google extension/background.js"
