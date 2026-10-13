@@ -1,16 +1,20 @@
-name: CI
+
+name: CI/CD - Guardian AI Angel
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - ci-cd-improvements
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 permissions:
   contents: read
 
 jobs:
-  build-and-test:
+  validate-and-package:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,8 +26,32 @@ jobs:
         with:
           node-version: 20
 
-      - name: Check extension file exists
-        run: test -f "google extension/background.js"
+      - name: Check extension files exist
+        shell: bash
+        run: |
+          test -f "google extension/manifest.json"
+          test -f "google extension/background.js"
+          test -f "google extension/popup.html"
+          test -f "google extension/popup.js"
 
       - name: Validate JavaScript syntax
-        run: node --check "google extension/background.js"
+        shell: bash
+        run: |
+          find "google extension" -type f -name "*.js" -print0 |
+          while IFS= read -r -d '' file; do
+            echo "Checking: $file"
+            node --check "$file" || exit 1
+          done
+
+      - name: Package extension
+        shell: bash
+        run: |
+          cd "google extension"
+          zip -r ../guardian-ai-angel-extension.zip .
+
+      - name: Upload extension ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: guardian-ai-angel-extension
+          path: guardian-ai-angel-extension.zip
+          if-no-files-found: error
