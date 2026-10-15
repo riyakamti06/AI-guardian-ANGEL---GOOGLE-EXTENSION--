@@ -1,0 +1,833 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1020">
+
+  <meta name="description"
+        content="Guardian AI Angel is an AI-assisted Chrome extension project focused on browser safety, responsible browsing and intelligent assistance.">
+
+  <title>Guardian AI Angel | AI-Powered Browser Companion</title>
+
+  <style>
+    :root {
+      --bg: #0b1020;
+      --surface: #131c30;
+      --surface-light: #19243b;
+      --primary: #9385ff;
+      --cyan: #52e5d6;
+      --text: #f5f7ff;
+      --muted: #a9b5ce;
+      --border: rgba(255,255,255,.11);
+      --radius: 18px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 4px;
+    }
+
+    .container {
+      width: min(1120px, 90%);
+      margin: auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(11,16,32,.94);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      min-height: 76px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.6px;
+    }
+
+    .logo-icon {
+      color: var(--cyan);
+      margin-right: 7px;
+    }
+
+    .logo span {
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: var(--cyan);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-light);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+
+    .button-primary {
+      color: #0b1020;
+      background: linear-gradient(110deg, var(--cyan), #a5fff0);
+      border: none;
+    }
+
+    .hero {
+      padding: 110px 0 95px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at 50% 0%, #292452 0%, transparent 62%);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 7px 15px;
+      border: 1px solid #484576;
+      border-radius: 30px;
+      color: var(--cyan);
+      background: rgba(147,133,255,.08);
+      font-size: 13px;
+      margin-bottom: 26px;
+    }
+
+    h1 {
+      font-size: clamp(39px, 7vw, 72px);
+      line-height: 1.12;
+      letter-spacing: -2.5px;
+      margin-bottom: 25px;
+    }
+
+    .gradient {
+      color: var(--cyan);
+      background: linear-gradient(100deg, var(--primary), var(--cyan));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+      max-width: 710px;
+      margin: 0 auto 32px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .tech-line {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 35px;
+    }
+
+    .tech-tag {
+      padding: 6px 12px;
+      background: rgba(255,255,255,.045);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    section {
+      padding: 82px 0;
+    }
+
+    .section-heading {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 42px;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(28px, 4vw, 43px);
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      padding: 27px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      transition: transform .2s, border-color .2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #7165c9;
+    }
+
+    .card-icon {
+      width: 51px;
+      height: 51px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: #292547;
+      font-size: 25px;
+      margin-bottom: 19px;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 19px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .architecture {
+      background: #0e1527;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .flow-step {
+      text-align: center;
+      padding: 23px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+    }
+
+    .flow-step .number {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      margin: 0 auto 13px;
+      background: #292547;
+      color: var(--cyan);
+      border-radius: 50%;
+      font-weight: 800;
+    }
+
+    .flow-step h3 {
+      font-size: 15px;
+      margin-bottom: 7px;
+    }
+
+    .flow-step p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .notice {
+      max-width: 800px;
+      margin: 28px auto 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .install-box {
+      max-width: 850px;
+      margin: auto;
+      padding: 32px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+    }
+
+    .install-list {
+      list-style: none;
+      counter-reset: install;
+    }
+
+    .install-list li {
+      position: relative;
+      counter-increment: install;
+      padding: 0 0 24px 53px;
+      color: var(--muted);
+    }
+
+    .install-list li:last-child {
+      padding-bottom: 0;
+    }
+
+    .install-list li::before {
+      content: counter(install);
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: #292547;
+      color: var(--cyan);
+      font-weight: 800;
+    }
+
+    .install-list strong {
+      color: var(--text);
+    }
+
+    .install-list code {
+      color: var(--cyan);
+      overflow-wrap: anywhere;
+    }
+
+    .project-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .project-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .project-link .card-icon {
+      flex-shrink: 0;
+      margin: 0;
+    }
+
+    .project-link p {
+      overflow-wrap: anywhere;
+    }
+
+    .project-link a {
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .cta {
+      text-align: center;
+      padding: 65px 25px;
+      background: linear-gradient(130deg, #25214b, #112c3a);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+    }
+
+    .cta h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      margin-bottom: 14px;
+    }
+
+    .cta p {
+      max-width: 620px;
+      margin: 0 auto 25px;
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 80px;
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer a {
+      color: var(--cyan);
+    }
+
+    @media (max-width: 800px) {
+      .features {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .flow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .nav-links {
+        gap: 13px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 14px 0;
+      }
+
+      .nav-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .features,
+      .flow,
+      .project-links {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 75px 0 65px;
+      }
+
+      h1 {
+        letter-spacing: -1.5px;
+      }
+
+      .install-box {
+        padding: 23px;
+      }
+
+      section {
+        padding: 65px 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *, *::before, *::after {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <nav class="container" aria-label="Main navigation">
+      <a class="logo" href="#home">
+        <span class="logo-icon">✦</span>Guardian
+        <span>AI Angel</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#technology">Technology</a>
+        <a href="#install">Installation</a>
+        <a href="#project">Project</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="eyebrow">
+          ✦ AI ASSISTANCE · CHROME EXTENSION · MANIFEST V3
+        </div>
+
+        <h1>
+          Your Browser.<br>
+          <span class="gradient">Your Digital Guardian.</span>
+        </h1>
+
+        <p class="hero-description">
+          Meet Guardian AI Angel, a Chrome extension project combining
+          AI-assisted capabilities, browser technologies and automated
+          software testing to support a more informed browsing experience.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button button-primary" href="#install">
+            Get Started <span aria-hidden="true">→</span>
+          </a>
+
+          <a class="button"
+             href="https://github.com/riyakamti06/AI-guardian-ANGEL---GOOGLE-EXTENSION--"
+             target="_blank" rel="noopener noreferrer">
+            View Source Code ↗
+          </a>
+        </div>
+
+        <div class="tech-line">
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">Chrome Manifest V3</span>
+          <span class="tech-tag">OpenRouter AI</span>
+          <span class="tech-tag">GitHub Actions</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Intelligence for Your Browsing Experience</h2>
+          <p>
+            Explore the main technologies and goals behind the
+            Guardian AI Angel browser-extension project.
+          </p>
+        </div>
+
+        <div class="features">
+
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🤖</div>
+            <h3>AI-Assisted Capabilities</h3>
+            <p>
+              The project integrates with an AI service through OpenRouter.
+              AI behavior depends on the extension's configured prompts,
+              permissions and implementation.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🛡️</div>
+            <h3>Browser-Level Rules</h3>
+            <p>
+              Chrome's Declarative Net Request API supports configured
+              network-request rules within the extension's permissions
+              and rule configuration.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🧩</div>
+            <h3>Chrome Integration</h3>
+            <p>
+              Built using Chrome Extension Manifest V3, JavaScript,
+              extension pages and background service-worker technology.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">⚙️</div>
+            <h3>Automated CI/CD</h3>
+            <p>
+              GitHub Actions validates project files, checks JavaScript
+              syntax, runs configured tests and packages the extension
+              when the workflow succeeds.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🧪</div>
+            <h3>Testing and Reliability</h3>
+            <p>
+              Automated tests help check implemented behavior and catch
+              regressions before changes are packaged for distribution.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🔐</div>
+            <h3>Security Awareness</h3>
+            <p>
+              Responsible API-key handling, careful permissions and
+              privacy-conscious logging are important parts of
+              developing and maintaining the extension.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TECHNOLOGY / WORKFLOW -->
+    <section class="architecture" id="technology">
+      <div class="container">
+        <div class="section-heading">
+          <h2>How the Project Is Built</h2>
+          <p>
+            A simplified view of the development and delivery workflow.
+            Actual runtime behavior depends on the extension code.
+          </p>
+        </div>
+
+        <div class="flow">
+
+          <article class="flow-step">
+            <div class="number">1</div>
+            <h3>Chrome Extension</h3>
+            <p>Manifest V3, popup interface and JavaScript files.</p>
+          </article>
+
+          <article class="flow-step">
+            <div class="number">2</div>
+            <h3>AI Integration</h3>
+            <p>Configured requests to OpenRouter's AI service.</p>
+          </article>
+
+          <article class="flow-step">
+            <div class="number">3</div>
+            <h3>GitHub Actions</h3>
+            <p>Automated validation, tests and ZIP packaging.</p>
+          </article>
+
+          <article class="flow-step">
+            <div class="number">4</div>
+            <h3>Testing and Release</h3>
+            <p>Install the package locally or prepare it for publication.</p>
+          </article>
+
+        </div>
+
+        <p class="notice">
+          GitHub Pages hosts this informational website. It does not run
+          the Chrome extension's background service worker or grant
+          access to Chrome extension APIs.
+        </p>
+      </div>
+    </section>
+
+    <!-- INSTALLATION -->
+    <section id="install">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Get Started with Guardian AI Angel</h2>
+          <p>
+            You can inspect the source code and install the extension
+            in Chrome for development and testing.
+          </p>
+        </div>
+
+        <div class="install-box">
+          <ol class="install-list">
+            <li>
+              <strong>Open the GitHub repository.</strong><br>
+              Visit the project source code using the button below.
+            </li>
+
+            <li>
+              <strong>Download the project.</strong><br>
+              Click the green Code button, then choose Download ZIP,
+              or clone the repository using Git.
+            </li>
+
+            <li>
+              <strong>Find the extension folder.</strong><br>
+              Extract the ZIP and open the
+              <code>google extension</code> folder containing
+              <code>manifest.json</code>.
+            </li>
+
+            <li>
+              <strong>Open Chrome Extensions.</strong><br>
+              Type <code>chrome://extensions</code> into Chrome's
+              address bar and enable Developer mode.
+            </li>
+
+            <li>
+              <strong>Load the extension.</strong><br>
+              Click Load unpacked and select the extracted
+              <code>google extension</code> folder.
+            </li>
+
+            <li>
+              <strong>Test the extension.</strong><br>
+              Open its popup, try the implemented features and inspect
+              extension errors if anything fails.
+            </li>
+          </ol>
+
+          <div style="margin-top:30px;display:flex;gap:12px;flex-wrap:wrap">
+            <a class="button button-primary"
+               href="https://github.com/riyakamti06/AI-guardian-ANGEL---GOOGLE-EXTENSION--">
+              Open GitHub Repository ↗
+            </a>
+
+            <a class="button"
+               href="https://github.com/riyakamti06/AI-guardian-ANGEL---GOOGLE-EXTENSION--/actions">
+              View CI/CD Runs ↗
+            </a>
+          </div>
+
+          <p class="notice" style="text-align:left">
+            This is a developer installation procedure. Public
+            distribution requires publishing through the Chrome Web Store
+            and completing its review and disclosure requirements.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT LINKS -->
+    <section id="project">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Explore the Project</h2>
+          <p>
+            Access the repository, automated workflow and project
+            documentation from one place.
+          </p>
+        </div>
+
+        <div class="project-links">
+
+          <article class="card project-link">
+            <div class="card-icon" aria-hidden="true">💻</div>
+            <div>
+              <h3>Source Code</h3>
+              <p>Explore the extension's implementation and files.</p>
+              <a href="https://github.com/riyakamti06/AI-guardian-ANGEL---GOOGLE-EXTENSION--">
+                View repository ↗
+              </a>
+            </div>
+          </article>
+
+          <article class="card project-link">
+            <div class="card-icon" aria-hidden="true">🔄</div>
+            <div>
+              <h3>CI/CD Pipeline</h3>
+              <p>Review automated builds, tests and package artifacts.</p>
+              <a href="https://github.com/riyakamti06/AI-guardian-ANGEL---GOOGLE-EXTENSION--/actions">
+                View workflow runs ↗
+              </a>
+            </div>
+          </article>
+
+          <article class="card project-link">
+            <div class="card-icon" aria-hidden="true">📘</div>
+            <div>
+              <h3>Documentation</h3>
+              <p>Read the project's README and setup instructions.</p>
+              <a href="https://github.com/riyakamti06/AI-guardian-ANGEL---GOOGLE-EXTENSION--/blob/main/README.md">
+                Read README ↗
+              </a>
+            </div>
+          </article>
+
+          <article class="card project-link">
+            <div class="card-icon" aria-hidden="true">🔒</div>
+            <div>
+              <h3>Security Information</h3>
+              <p>Review the repository's security documentation.</p>
+              <a href="https://github.com/riyakamti06/AI-guardian-ANGEL---GOOGLE-EXTENSION--/blob/main/SECURITY.md">
+                View security policy ↗
+              </a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section>
+      <div class="container">
+        <div class="cta">
+          <h2>Technology with a Purpose.</h2>
+          <p>
+            Guardian AI Angel brings together browser-extension
+            development, AI integration and automated testing in
+            one practical software engineering project.
+          </p>
+
+          <a class="button button-primary"
+             href="https://github.com/riyakamti06/AI-guardian-ANGEL---GOOGLE-EXTENSION--">
+            Explore Guardian AI Angel ↗
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>
+        © <span id="year"></span> Guardian AI Angel.
+        Built with HTML, CSS, JavaScript and Chrome Extension technologies.
+      </p>
+      <p style="margin-top:8px">
+        <a href="#home">Back to top ↑</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+  </script>
+
+</body>
+</html>
